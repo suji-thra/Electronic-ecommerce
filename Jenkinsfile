@@ -9,13 +9,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/suji-thra/ecommerce-devops.git'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 sh '''
@@ -57,8 +50,17 @@ pipeline {
             steps {
                 sh '''
                     kubectl apply -f kubernetes/namespace.yaml
+
                     kubectl apply -f kubernetes/deployment.yaml
+
                     kubectl apply -f kubernetes/service.yaml
+
+                    kubectl set image deployment/ecommerce-deployment \
+                    ecommerce=${IMAGE_NAME}:${IMAGE_TAG} \
+                    -n ecommerce
+
+                    kubectl rollout status deployment/ecommerce-deployment \
+                    -n ecommerce
                 '''
             }
         }
@@ -66,8 +68,14 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 sh '''
+                    echo "===== Kubernetes Nodes ====="
+                    kubectl get nodes
+
+                    echo "===== E-Commerce Pods ====="
                     kubectl get pods -n ecommerce
-                    kubectl get services -n ecommerce
+
+                    echo "===== E-Commerce Service ====="
+                    kubectl get svc -n ecommerce
                 '''
             }
         }

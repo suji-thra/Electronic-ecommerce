@@ -27,7 +27,6 @@ pipeline {
                         passwordVariable: 'DOCKER_PASSWORD'
                     )
                 ]) {
-
                     sh '''
                         echo "$DOCKER_PASSWORD" | docker login \
                         -u "$DOCKER_USERNAME" \
@@ -50,9 +49,7 @@ pipeline {
             steps {
                 sh '''
                     kubectl apply -f kubernetes/namespace.yaml
-
                     kubectl apply -f kubernetes/deployment.yaml
-
                     kubectl apply -f kubernetes/service.yaml
 
                     kubectl set image deployment/ecommerce-deployment \
@@ -68,13 +65,8 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 sh '''
-                    echo "===== Kubernetes Nodes ====="
                     kubectl get nodes
-
-                    echo "===== E-Commerce Pods ====="
                     kubectl get pods -n ecommerce
-
-                    echo "===== E-Commerce Service ====="
                     kubectl get svc -n ecommerce
                 '''
             }
@@ -82,7 +74,6 @@ pipeline {
     }
 
     post {
-
         success {
             echo 'E-Commerce application deployed successfully.'
         }

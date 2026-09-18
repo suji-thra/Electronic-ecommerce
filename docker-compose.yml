@@ -4,7 +4,7 @@ services:
 
   ecommerce:
     build: .
-    container_name: ecommerce-app
+    container_name: ecommerce-container
     ports:
       - "8080:80"
     restart: always

@@ -48,9 +48,9 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
-                    kubectl apply -f kubernetes/namespace.yaml
-                    kubectl apply -f kubernetes/deployment.yaml
-                    kubectl apply -f kubernetes/service.yaml
+                    kubectl apply -f kubernetes/namespace.yml
+                    kubectl apply -f kubernetes/deployment.yml
+                    kubectl apply -f kubernetes/service.yml
 
                     kubectl set image deployment/ecommerce-deployment \
                     ecommerce=${IMAGE_NAME}:${IMAGE_TAG} \
